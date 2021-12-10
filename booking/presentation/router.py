@@ -41,8 +41,12 @@ class BookingCreateOut(Schema):
 
 @router.post("/", response_model=BookingCreateOut)
 async def make_booking(booking_create: BookingCreateIn):
-    new_booking = Booking(title=booking_create.title, description=booking_create.description,
-                          start_at=booking_create.time_range.start_at, end_at=booking_create.time_range.end_at)
+    new_booking = Booking(
+        title=booking_create.title,
+        description=booking_create.description,
+        start_at=booking_create.time_range.start_at,
+        end_at=booking_create.time_range.end_at,
+    )
     bookings.append(new_booking)
     return new_booking
 
@@ -62,7 +66,8 @@ async def update_booking(booking_id: int, booking_update: BookingUpdateIn):
         raise HTTPException(status_code=404, detail="No Bookings")
 
     existing_booking_idx, existing_booking = next(
-        ((booking_idx, booking) for booking_idx, booking in enumerate(bookings) if booking.id_ == booking_id), None)
+        ((booking_idx, booking) for booking_idx, booking in enumerate(bookings) if booking.id_ == booking_id), None
+    )
     if not existing_booking:
         raise ValueError
     updated_booking: Booking = existing_booking.copy()
@@ -80,7 +85,8 @@ async def update_booking(booking_id: int, booking_update: BookingUpdateIn):
 @router.delete("/{booking_id}")
 async def delete_booking(booking_id: int):
     existing_booking_idx = next(
-        (booking_idx for booking_idx, booking in enumerate(bookings) if booking.id_ == booking_id), None)
+        (booking_idx for booking_idx, booking in enumerate(bookings) if booking.id_ == booking_id), None
+    )
     if existing_booking_idx is None:
         raise ValueError
     del bookings[existing_booking_idx]
