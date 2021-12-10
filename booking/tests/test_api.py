@@ -4,7 +4,10 @@ def test_create_booking(client):
         url="/api/v1/booking/",
         json={
             "title": "test_booking",
-            "time_range": {"start_at": "2021-12-10T11:44:13.439Z", "end_at": "2021-12-10T11:44:13.439Z"},
+            "time_range": {
+                "start_at": "2021-12-10T11:44:13.439Z",
+                "end_at": "2021-12-10T11:44:13.439Z",
+            },
         },
     )
 

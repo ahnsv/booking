@@ -1,12 +1,14 @@
-from datetime import datetime
-from typing import List, Optional
+from typing import List
 
-import pydantic.dataclasses
 from fastapi import APIRouter, HTTPException
-from pydantic import Field
 
-from booking import Schema
 from booking.domain.booking import Booking
+from booking.presentation.schema import (
+    BookingCreateIn,
+    BookingCreateOut,
+    BookingUpdateIn,
+    BookingUpdateOut,
+)
 
 bookings: List[Booking] = []
 
@@ -23,22 +25,6 @@ async def get_info(booking_id: int):
     return next((booking for booking in bookings if booking.id_ == booking_id), None)
 
 
-@pydantic.dataclasses.dataclass
-class BookingTimeRange:
-    start_at: datetime
-    end_at: datetime
-
-
-class BookingCreateIn(Schema):
-    title: str
-    description: Optional[str]
-    time_range: BookingTimeRange
-
-
-class BookingCreateOut(Schema):
-    id_: int = Field(alias="id")
-
-
 @router.post("/", response_model=BookingCreateOut)
 async def make_booking(booking_create: BookingCreateIn):
     new_booking = Booking(
@@ -51,22 +37,18 @@ async def make_booking(booking_create: BookingCreateIn):
     return new_booking
 
 
-class BookingUpdateIn(BookingCreateIn):
-    pass
-
-
-class BookingUpdateOut(Schema):
-    id_: int = Field(alias="id")
-    updated_at: datetime
-
-
 @router.put("/{booking_id}", response_model=BookingUpdateOut)
 async def update_booking(booking_id: int, booking_update: BookingUpdateIn):
     if not bookings:
         raise HTTPException(status_code=404, detail="No Bookings")
 
     existing_booking_idx, existing_booking = next(
-        ((booking_idx, booking) for booking_idx, booking in enumerate(bookings) if booking.id_ == booking_id), None
+        (
+            (booking_idx, booking)
+            for booking_idx, booking in enumerate(bookings)
+            if booking.id_ == booking_id
+        ),
+        None,
     )
     if not existing_booking:
         raise ValueError
@@ -85,7 +67,12 @@ async def update_booking(booking_id: int, booking_update: BookingUpdateIn):
 @router.delete("/{booking_id}")
 async def delete_booking(booking_id: int):
     existing_booking_idx = next(
-        (booking_idx for booking_idx, booking in enumerate(bookings) if booking.id_ == booking_id), None
+        (
+            booking_idx
+            for booking_idx, booking in enumerate(bookings)
+            if booking.id_ == booking_id
+        ),
+        None,
     )
     if existing_booking_idx is None:
         raise ValueError
