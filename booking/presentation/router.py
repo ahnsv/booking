@@ -43,11 +43,7 @@ async def update_booking(booking_id: int, booking_update: BookingUpdateIn):
         raise HTTPException(status_code=404, detail="No Bookings")
 
     existing_booking_idx, existing_booking = next(
-        (
-            (booking_idx, booking)
-            for booking_idx, booking in enumerate(bookings)
-            if booking.id_ == booking_id
-        ),
+        ((booking_idx, booking) for booking_idx, booking in enumerate(bookings) if booking.id_ == booking_id),
         None,
     )
     if not existing_booking:
@@ -67,11 +63,7 @@ async def update_booking(booking_id: int, booking_update: BookingUpdateIn):
 @router.delete("/{booking_id}")
 async def delete_booking(booking_id: int):
     existing_booking_idx = next(
-        (
-            booking_idx
-            for booking_idx, booking in enumerate(bookings)
-            if booking.id_ == booking_id
-        ),
+        (booking_idx for booking_idx, booking in enumerate(bookings) if booking.id_ == booking_id),
         None,
     )
     if existing_booking_idx is None:

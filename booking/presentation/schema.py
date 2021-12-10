@@ -2,15 +2,20 @@ from datetime import datetime
 from typing import Optional
 
 import pydantic.dataclasses
-from pydantic import Field
+from pydantic import Field, BaseModel
 
-from booking import Schema
+from booking.domain import Model
 
 
 @pydantic.dataclasses.dataclass
 class BookingTimeRange:
     start_at: datetime
     end_at: datetime
+
+
+class Schema(BaseModel):
+    class Config(Model.Config):
+        orm_mode = True
 
 
 class BookingCreateIn(Schema):
