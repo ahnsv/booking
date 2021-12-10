@@ -3,10 +3,10 @@ name: PR Pre-merge
 on:
   pull_request:
     branches:
-      - *
+      - '*'
 
 jobs:
-  deploy:
+  pre_merge:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
