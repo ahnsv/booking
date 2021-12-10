@@ -28,6 +28,7 @@ async def get_info(booking_id: int):
 @router.post("/", response_model=BookingCreateOut)
 async def make_booking(booking_create: BookingCreateIn):
     new_booking = Booking(
+        id_=len(bookings) + 1,
         title=booking_create.title,
         description=booking_create.description,
         start_at=booking_create.time_range.start_at,
